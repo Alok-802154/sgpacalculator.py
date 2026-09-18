@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECE SGPA Calculator</title>
+</head>
+
+<body>
+
+<h1>ECE Semester 3 SGPA Calculator</h1>
+
+<form method="POST">
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Subject</th>
+        <th>Credits</th>
+        <th>Obtained Marks</th>
+        <th>Grade Point</th>
+    </tr>
+
+    {% for subject, credit in subjects %}
+    <tr>
+        <td>{{ subject }}</td>
+        <td>{{ credit }}</td>
+
+        <td>
+            <input
+                type="number"
+                name="marks_{{ loop.index0 }}"
+                min="0"
+                max="100"
+                required
+                oninput="updateGrade(this, 'grade_{{ loop.index0 }}')"
+            >
+        </td>
+
+        <td id="grade_{{ loop.index0 }}">-</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+<button type="submit">Calculate SGPA</button>
+
+</form>
+
+{% if error %}
+<h3>{{ error }}</h3>
+{% endif %}
+
+{% if sgpa is not none %}
+<h2>SGPA: {{ "%.2f"|format(sgpa) }}</h2>
+<p>Total Credit × Grade Point: {{ total_points }}</p>
+{% endif %}
+
+
+<script>
+function getGradePoint(marks) {
+    if (marks >= 91) return 10;
+    if (marks >= 81) return 9;
+    if (marks >= 71) return 8;
+    if (marks >= 61) return 7;
+    if (marks >= 51) return 6;
+    if (marks >= 45) return 5;
+    if (marks >= 40) return 4;
+    return 0;
+}
+
+function updateGrade(input, gradeId) {
+    let marks = Number(input.value);
+    let grade = "-";
+
+    if (input.value !== "") {
+        grade = getGradePoint(marks);
+    }
+
+    document.getElementById(gradeId).innerText = grade;
+}
+</script>
+
+</body>
+</html>
